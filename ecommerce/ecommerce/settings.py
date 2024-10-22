@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Carrito',
     'InterfazGeneral',
     'PagosyPedidos',
+    'corsheaders',
 
 ]
 
@@ -53,9 +54,29 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Permitir solo ciertos métodos HTTP
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
+]
+
+# Permitir ciertos encabezados
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "x-csrftoken",
+    "authorization",
+]
 
 TEMPLATES = [
     {

@@ -2,6 +2,6 @@
 from django.urls import path
 from GestionUsuarios import views
 urlpatterns = [
-    path('', views.registerUser, name='registro_usuario'),
+    path('registro/', views.registerUser, name='registro_usuario'),
     
 ]

@@ -6,22 +6,32 @@ from django.contrib.auth.hashers import make_password  # Importamos para hash de
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def registerUser(request):
-   
     if request.method == 'POST':  # Verificamos que el método de la solicitud sea POST
-        print(request.body.decode('utf-8')) #sin la aclaracion em mostraria solo bits
-        #try:
-            #data = json.loads(request.body)
-        #print(data)  # Cargamos los datos del cuerpo de la solicitud en formato JSON
-        #except json.JSONDecodeError:
-            #return JsonResponse({'success': False, 'message': 'Datos JSON inválidos.'}, status=400)
-        
-        mail =  request.POST.get('register_email')   # obtenemso el crudo del html xD
-        contraseña = request.POST.get('register_password') 
-        confirmarContraseña=request.POST.get('confirm_password')
+        #print(request.body.decode('utf-8')) #sin la aclaracion em mostraria solo bits
+        try:
+            data = json.loads(request.body.decode('utf-8'))
 
+            mail =  request.POST.get('register_email')   # obtenemso el crudo del html xD
+            contraseña = request.POST.get('register_password') 
+            confirmarContraseña=request.POST.get('confirm_password')
+
+            if contraseña != confirmarContraseña:
+                return JsonResponse({'success': False, 'message': 'Las contraseñas no coinciden.'}, status=409)
+
+            if Validacion.objects.filter(correo=mail).exists():
+                return JsonResponse({'success': False, 'message': 'El correo ya está registrado.'}, status=409)
+
+            nuevoUsuario = Validacion(correo=mail, contraseña=make_password(contraseña))
+            nuevoUsuario.save()
+
+            return JsonResponse({'success': True, 'message': 'Usuario registrado correctamente'}, status=201)
+            #print(data)  # Cargamos los datos del cuerpo de la solicitud en formato JSON
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Datos JSON inválidos.'}, status=400)
+'''
         if contraseña != confirmarContraseña:
             #return JsonResponse({'success': False, 'message': 'Contraseña incorrecta.'}, status=409)
-          return render(request, 'GestionUsuarios/registro.html', {
+            return render(request, 'GestionUsuarios/registro.html', {
                 'error': 'Las contraseñas no coinciden.Vuelva a intentarlo',
                 'register_password': contraseña  # Volver a rellenar el campo de correo
             })
@@ -37,8 +47,8 @@ def registerUser(request):
         return JsonResponse({'success': True, 'message': 'Usuario registrado correctamente'}, status=201)
 
     # Si no es un método POST, devolvemos un error 405 (Method Not Allowed)
-   
-    return render(request,'GestionUsuarios/registro.html')
+'''   
+return render(request,'GestionUsuarios/registro.html')
 
 
 
