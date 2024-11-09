@@ -1,44 +1,49 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-from django.shortcuts import render
-from django.shortcuts import redirect
-
-#Integracion carrito
+from django.shortcuts import redirect,render
+from PagosyPedidos.models import Pedido, PedidoDetalle
+from datetime import datetime
 import mercadopago
 from django.conf import settings
-from django.shortcuts import render
-
-
-
-
-def metodo_pago_1(request):
-    return render(request,"pagos/metodoPago1.html")
-
-def metodo_pago_2(request):
-    return render(request,"pagos/metodoPago2.html")
-
-
 
 def metodo_pago_mercadopago(request):
-    # Inicializar el SDK de MercadoPago con el access_token
-    sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
-
-    # Calcular el total de la compra sumando los productos en el carrito
-    total_carrito = 0
+    # Guardar el pedido en la base de datos
     if 'carro' in request.session:
-        for item in request.session['carro'].values():
-            total_carrito += float(item['precio']) * int(item.get('cantidad', 1))
+        carro = request.session['carro']
+        usuario_id = request.session.get('user_id')
+        usuario_nombre = request.session.get('username')
+
+        # Calcular el total del pedido
+        total = sum(float(item['precio']) * int(item['cantidad']) for item in carro.values())
+
+        # Crear el pedido
+        pedido = Pedido.objects.create(
+            usuario_id=usuario_id,
+            usuario_nombre=usuario_nombre,
+            total=total,
+            fecha_pedido=datetime.now()
+        )
+
+        # Crear detalles del pedido
+        for item in carro.values():
+            PedidoDetalle.objects.create(
+                pedido=pedido,
+                producto_nombre=item['nombre'],
+                cantidad=item['cantidad'],
+                precio_unitario=float(item['precio']),
+                subtotal=float(item['precio']) * int(item['cantidad']),
+                imagen=item['imagen']
+            )
+
+    # Inicializar el SDK de MercadoPago
+    sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
 
     # Crear la preferencia de pago con el total calculado
     preference_data = {
         "items": [
             {
-                "title": "Total del carrito",
+                "title": "Compra Total",
                 "quantity": 1,
-                "unit_price": total_carrito,
-                "currency_id": "ARS"  # Usa la moneda que estés usando
+                "unit_price": total,
+                "currency_id": "ARS",
             }
         ],
         "back_urls": {
@@ -46,10 +51,11 @@ def metodo_pago_mercadopago(request):
             "failure": "http://tu-dominio.com/failure",
             "pending": "http://tu-dominio.com/pending"
         },
-        "auto_return": "approved"
+        "auto_return": "approved",
     }
 
-    preference_response = sdk.preference().create(preference_data)  # Creación de la preferencia
+    # Crear la preferencia
+    preference_response = sdk.preference().create(preference_data)
     preference = preference_response["response"]
 
     # Pasar la public_key y preference_id al template
