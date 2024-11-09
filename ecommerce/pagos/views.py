@@ -25,13 +25,20 @@ def metodo_pago_mercadopago(request):
     # Inicializar el SDK de MercadoPago con el access_token
     sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
 
-    # Crear la preferencia de pago
+    # Calcular el total de la compra sumando los productos en el carrito
+    total_carrito = 0
+    if 'carro' in request.session:
+        for item in request.session['carro'].values():
+            total_carrito += float(item['precio']) * int(item.get('cantidad', 1))
+
+    # Crear la preferencia de pago con el total calculado
     preference_data = {
         "items": [
             {
-                "title": "Producto Ejemplo",
+                "title": "Total del carrito",
                 "quantity": 1,
-                "unit_price": 100.00
+                "unit_price": total_carrito,
+                "currency_id": "ARS"  # Usa la moneda que estés usando
             }
         ],
         "back_urls": {
@@ -39,13 +46,13 @@ def metodo_pago_mercadopago(request):
             "failure": "http://tu-dominio.com/failure",
             "pending": "http://tu-dominio.com/pending"
         },
-        "auto_return": "approved",  # Redirecciona automáticamente al éxito si el pago es aprobado
+        "auto_return": "approved"
     }
 
     preference_response = sdk.preference().create(preference_data)  # Creación de la preferencia
     preference = preference_response["response"]
 
-    # Pasamos la public_key al template junto con la preferencia ID
+    # Pasar la public_key y preference_id al template
     context = {
         "preference_id": preference['id'],
         "public_key": settings.MERCADO_PAGO_PUBLIC_KEY
