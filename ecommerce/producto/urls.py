@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
 
 
 app_name = 'producto' #Se crea namespace para poder acceder a estas URLs desde templates que no le pertenecen a la app

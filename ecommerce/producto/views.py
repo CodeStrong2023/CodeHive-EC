@@ -25,7 +25,7 @@ def api_mostrar_catalogo(request):
         productos = productos.filter(query)
 
 
-    return render(request, 'Productos/catalogo.html', {'productos': productos})
+    return render(request, 'producto/catalogo.html', {'productos': productos})
 
 
 
@@ -46,13 +46,13 @@ def api_detalle_producto(request, producto_id):
 
     # Verifica si el producto existe
     if not producto:
-        return render(request, 'Productos/producto_no_encontrado.html')
+        return render(request, 'producto/producto_no_encontrado.html')
 
     # Verifica si el producto ya está en el carrito
     carro = Carro(request)
     producto_en_carro = str(producto.id) in carro.carro  # Cambiado de producto['id'] a producto.id
 
-    return render(request, 'Productos/ver_producto.html', {'producto': producto, 'producto_en_carro': producto_en_carro})
+    return render(request, 'producto/ver_producto.html', {'producto': producto, 'producto_en_carro': producto_en_carro})
     
 
 
