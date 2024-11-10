@@ -12,33 +12,30 @@
 <link rel="stylesheet" href="http://127.0.0.1:8000/static/InterfazGeneral/css/styleCss.css">
 
 
-<div class="container">
-    <div class="row filter-container">
-        <form method="get" action="{% url 'producto:api_mostrar_catalogo' %}">
-            <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
+<div class="containerCat row g-4">
+    <div class="row filter-container justify-content-around align-items-center">
+        <form method="get" action="{% url 'producto:api_mostrar_catalogo' %}" class="col-md-2 mb-9">
+            <div class="col-md-3 col-sm-6 filter-item d-flex">
                 <input type="checkbox" id="armadura" name="categoria" value="armadura" 
-                       {% if 'armadura' in categorias_seleccionadas %}checked{% endif %} 
-                       onchange="this.form.submit();">
+                        {% if 'armadura' in categorias_seleccionadas %}checked{% endif %} 
+                        onchange="this.form.submit();">
                 <label for="armadura">Armadura</label>
             </div>
-            <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
+            <div class="col-md-3 col-sm-6 filter-item d-flex">
                 <input type="checkbox" id="arma" name="categoria" value="arma" 
-                       {% if 'arma' in categorias_seleccionadas %}checked{% endif %} 
-                       onchange="this.form.submit();">
+                        {% if 'arma' in categorias_seleccionadas %}checked{% endif %} 
+                        onchange="this.form.submit();">
                 <label for="arma">Arma</label>
             </div>
         </form> 
-        
-        
-
-        <form method="get" action="{% url 'producto:filtrar_por_precio' %}">
-            <div class="col-md-6 col-sm-12 filter-item d-flex align-items-center">
+        <form method="get" action="{% url 'producto:filtrar_por_precio' %}" class="col-md-8 mb-9">
+            <div class="col-md-6 col-sm-12 filter-item d-flex precioBar rango-largo">
                 <span id="precio-valor-min">${{ precio_min }}</span>
                 
                 <!-- Barra de rango para el precio máximo -->
                 <input 
                     type="range" 
-                    class="form-range" 
+                    class="form-range " 
                     id="filtro-precio" 
                     min="500" 
                     max="100000" 
@@ -52,14 +49,10 @@
         
                 <!-- Input oculto para capturar el valor del precio máximo -->
                 <input type="hidden" id="precio_max" name="precio_max" value="{{ precio_max }}">
-                
             </div>
         </form>
     </div>
 </div>
-
-
-
 
 <div id="productos-container" class="container py-5">
     <div class="row g-4">
@@ -78,6 +71,7 @@
     </div>
 </div>
 
+<!-- ESTO ES UN POPUP
 <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -89,14 +83,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <img id="modal-imagen" src="{{producto.imagen.url}}" alt="Imagen del producto"
-                             class="img-fluid">
+                            class="img-fluid">
                     </div>
                     <div class="col-md-6">
                         <p><strong>Nombre:</strong> <span id="modal-nombre"></span></p>
                         <p><strong>Descripción:</strong> <span id="modal-descripcion"></span></p>
                         <p><strong>Stock:</strong> <span id="modal-stock"></span></p>
 
-                        <!-- Mostrar solo si es arma o armadura -->
+                        * Mostrar solo si es arma o armadura *
                         <p><strong>Categoría:</strong> <span id="modal-categoria"></span></p>
 
                         <p><strong>Juego:</strong> <span id="modal-juego"></span></p>
@@ -111,7 +105,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 
 <script>

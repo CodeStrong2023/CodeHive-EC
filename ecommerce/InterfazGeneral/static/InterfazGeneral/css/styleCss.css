@@ -210,52 +210,30 @@ select.form-control option:hover {
 }
 
 /* PRODUCTO */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.filter-item {
+    display: flex;
+    align-items: center;
+}
+
+.containerCat{
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    box-shadow: 0 0 15px var(--colorPrimario) !important;
+    width: 800px !important; 
+    margin-top: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;  
+    padding: 8px 0px !important;
+}
+
+.rango-largo { 
+    width: 100% !important;  
+}
 
 /* CARRITO */
 
 /* PASARELA */
-
-/*
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #363EFF;
-    color: #fff;
-}
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-.search-bar {
-    flex-grow: 1;
-    margin: 0 20px;
-}
-.search-bar input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-.nav-links {
-    display: flex;
-    align-items: center;
-}
-.nav-links a, .nav-links button {
-    color: #fff;
-    margin-left: 15px;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.nav-links i{
-    font-size: 20px;
-    color: #2a352a;
-
-}
-
-.nav-links i:hover{
-    width: 5%;
-    color: #13c113;
-}*/
