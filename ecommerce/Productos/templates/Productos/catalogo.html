@@ -14,24 +14,52 @@
 
 <div class="container">
     <div class="row filter-container">
-        <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
-            <input type="checkbox" id="armadura" name="categoria" value="armadura" onchange="debouncedActualizarPrecios();">
-            <label for="armadura">Armadura</label>
-        </div>
-        <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
-            <input type="checkbox" id="arma" name="categoria" value="arma" onchange="debouncedActualizarPrecios();">
-            <label for="arma">Arma</label>
-        </div>        
-        <div class="col-md-6 col-sm-12 filter-item d-flex align-items-center">
-            <span id="precio-valor-min">$500</span>  Valor inicial del precio mínimo 
-            <input type="range" class="form-range" id="filtro-precio" min="500" max="100000" step="500" oninput="debouncedActualizarPrecios();">
-            <span id="precio-valor-max">$100000</span>  Valor inicial del precio máximo 
-            Inputs ocultos para capturar los valores mínimo y máximo 
-            <input type="hidden" id="precio_min" name="precio_min" value="500">
-            <input type="hidden" id="precio_max" name="precio_max" value="100000">
-        </div>
+        <form method="get" action="{% url 'producto:api_mostrar_catalogo' %}">
+            <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
+                <input type="checkbox" id="armadura" name="categoria" value="armadura" 
+                       {% if 'armadura' in categorias_seleccionadas %}checked{% endif %} 
+                       onchange="this.form.submit();">
+                <label for="armadura">Armadura</label>
+            </div>
+            <div class="col-md-3 col-sm-6 filter-item d-flex align-items-center">
+                <input type="checkbox" id="arma" name="categoria" value="arma" 
+                       {% if 'arma' in categorias_seleccionadas %}checked{% endif %} 
+                       onchange="this.form.submit();">
+                <label for="arma">Arma</label>
+            </div>
+        </form> 
+        
+        
+
+        <form method="get" action="{% url 'producto:filtrar_por_precio' %}">
+            <div class="col-md-6 col-sm-12 filter-item d-flex align-items-center">
+                <span id="precio-valor-min">${{ precio_min }}</span>
+                
+                <!-- Barra de rango para el precio máximo -->
+                <input 
+                    type="range" 
+                    class="form-range" 
+                    id="filtro-precio" 
+                    min="500" 
+                    max="100000" 
+                    step="500" 
+                    name="precio_max" 
+                    value="{{ precio_max }}" 
+                    oninput="actualizarPrecioMax()"
+                >
+                
+                <span id="precio-valor-max">${{ precio_max }}</span>
+        
+                <!-- Input oculto para capturar el valor del precio máximo -->
+                <input type="hidden" id="precio_max" name="precio_max" value="{{ precio_max }}">
+                
+            </div>
+        </form>
     </div>
 </div>
+
+
+
 
 <div id="productos-container" class="container py-5">
     <div class="row g-4">
@@ -84,6 +112,28 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    function actualizarPrecioMax() {
+      var rangoPrecio = document.getElementById('filtro-precio');
+      var precioMaxInput = document.getElementById('precio_max');
+      
+      // Actualiza el valor del input oculto con el valor de la barra de rango
+      precioMaxInput.value = rangoPrecio.value;
+      
+      // También actualiza el valor visible al usuario (en el span)
+      document.getElementById('precio-valor-max').textContent = "$" + rangoPrecio.value;
+  
+      // Enviar el formulario automáticamente
+      rangoPrecio.form.submit();
+  }
+  
+  
+      </script>
+
+
+
 
 
 {% endblock %}
