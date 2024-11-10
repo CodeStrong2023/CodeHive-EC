@@ -159,9 +159,17 @@ header::after {
 .custom-card img{
     width: 100% !important;
     height: auto;
-    max-height: 180px !important;
+    max-height: 190px !important;
     object-fit: cover !important;
 }
+
+.custom-card h5 { 
+    font-size: 1rem;
+    white-space: nowrap; 
+    overflow: hidden; 
+    white-space: normal;
+}
+
 
 .items-cards > div{
     margin-left: -15px !important;
