@@ -19,18 +19,18 @@
                 <input type="checkbox" id="armadura" name="categoria" value="armadura" 
                         {% if 'armadura' in categorias_seleccionadas %}checked{% endif %} 
                         onchange="this.form.submit();">
-                <label for="armadura">Armadura</label>
+                <label for="armadura" class="text-small textFor">Armadura</label>
             </div>
             <div class="col-md-3 col-sm-6 filter-item d-flex">
                 <input type="checkbox" id="arma" name="categoria" value="arma" 
                         {% if 'arma' in categorias_seleccionadas %}checked{% endif %} 
                         onchange="this.form.submit();">
-                <label for="arma">Arma</label>
+                <label for="arma" class="text-small textFor">Arma</label>
             </div>
         </form> 
         <form method="get" action="{% url 'producto:filtrar_por_precio' %}" class="col-md-8 mb-9">
             <div class="col-md-6 col-sm-12 filter-item d-flex precioBar rango-largo">
-                <span id="precio-valor-min">${{ precio_min }}</span>
+                <span id="precio-valor-min" class="text-small textFor">${{ precio_min }}</span>
                 
                 <!-- Barra de rango para el precio máximo -->
                 <input 
@@ -45,7 +45,7 @@
                     oninput="actualizarPrecioMax()"
                 >
                 
-                <span id="precio-valor-max">${{ precio_max }}</span>
+                <span id="precio-valor-max" class="text-small textFor">${{ precio_max }}</span>
         
                 <!-- Input oculto para capturar el valor del precio máximo -->
                 <input type="hidden" id="precio_max" name="precio_max" value="{{ precio_max }}">

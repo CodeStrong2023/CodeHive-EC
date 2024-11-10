@@ -231,7 +231,12 @@ select.form-control option:hover {
 }
 
 .rango-largo { 
-    width: 100% !important;  
+    width: 107% !important;  
+}
+
+.textFor{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 
 /* CARRITO */
