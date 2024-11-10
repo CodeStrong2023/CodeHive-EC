@@ -5,27 +5,13 @@ from django.db.models import Q
 from django.http import JsonResponse
 
 def api_mostrar_catalogo(request):
-    precio_min = request.GET.get('precio_min', 0)
-    precio_max = request.GET.get('precio_max', 100000)
-    categorias = request.GET.get('categoria', '') 
+    categorias_seleccionadas = request.GET.getlist('categoria')  # Obtiene las categorías seleccionadas
+    productos = filtrar_productos(categorias=categorias_seleccionadas)  # Filtra según categorías
 
-    productos = Producto.objects.filter(
-        precio__gte=precio_min, 
-        precio__lte=precio_max
-    ).select_related('categoria')
-
-    if categorias:
-        categorias = categorias.split(',')
-        query = Q()
-
-        if 'armadura' in categorias:
-            query |= Q(categoria__tipo='armadura')
-        if 'arma' in categorias:
-            query |= Q(categoria__tipo='arma')
-        productos = productos.filter(query)
-
-
-    return render(request, 'Productos/catalogo.html', {'productos': productos})
+    return render(request, 'Productos/catalogo.html', {
+        'productos': productos,
+        'categorias_seleccionadas': categorias_seleccionadas
+    })
 
 
 
@@ -96,7 +82,32 @@ def api_buscar_productos(request):
     return JsonResponse(list(productos), safe=False)
 
 
-def obtener_categorias(request):
-    categorias = Categoria.objects.all().values('id', 'arma', 'armadura')
-    return JsonResponse(list(categorias), safe=False)
- #comentario
+def filtrar_productos(categorias):
+    # Obtener todos los productos
+    productos = Producto.objects.all().select_related('categoria')
+    
+    # Aplicar el filtro solo si hay categorías especificadas
+    if categorias:
+        query = Q()
+        for categoria in categorias:
+            query |= Q(categoria__tipo=categoria)  # Crear una condición OR para cada categoría
+        productos = productos.filter(query)  # Aplicar el filtro de categoría
+    
+    return productos
+
+
+
+def filtrar_por_precio(request):
+    # Obtener los valores de precio_min y precio_max del GET
+    precio_min = int(request.GET.get('precio_min', 500))  # Valor mínimo por defecto: 500
+    precio_max = int(request.GET.get('precio_max', 100000))  # Valor máximo por defecto: 100000
+
+    # Filtrar productos según el rango de precios
+    productos = Producto.objects.filter(precio__gte=precio_min, precio__lte=precio_max)
+    
+    # Pasar los productos filtrados y los valores de precio al contexto
+    return render(request, 'Productos/catalogo.html', {
+        'productos': productos,
+        'precio_min': precio_min,
+        'precio_max': precio_max,
+    })
